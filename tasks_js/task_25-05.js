@@ -2,46 +2,63 @@
 
 const rl = require('readline-sync');
 
+// Используешь как входные параметры manufacturer и model, но в итоге их не используешь в функции
 function Product(name, manufacturer, model) {
-    this._name = name;
-    this._manufacturer = 'Redmond';
-    this._model = 'SteakMaster RGM-M813';
+    // Если ты используешь функцию-конструктор, нет смысла объявлять параметры через _ 
+    this.name = name; // Здесь будет this.name = name;  
+    this.manufacturer = manufacturer;  // Здесь будет this.manufacturer = manufacturer
+    this.model = model; // здесь соответственно this.model = model
+    // Делай логические отступы, если у тебя идут сначала параметры, потом методы, логично их отделить
+    this._programms = [
+        'rare',
+        'medium rare',
+        'medium',
+        'medium well',
+        'well done'
+    ];
+
     this.mode = function () {
         console.log('Выберите программу для гриля:');
-        console.log(this._programms.join('\n'));
+        console.log(this._programms.join('\n')); // Здесь у тебя даже линтер должен ругаться что что-то идёт не так с _programms
     };
 
     Object.defineProperty(this, 'programms', {
-        get() {
+        get: function () {
             return this._programms;
         },
-        configurable: true
-    });
-
-    Object.defineProperty(this, 'programms', {
-        set(p) {
+        set: function (p) {
             if (Array.isArray(p)) {
                 this._programms = p;
             } else {
-                console.log('Param type is not array!')
+                console.log('Param type is not array!');
             }
-        }
+        },
+        configurable: true,
     });
+
+    Object.defineProperty(this, 'programms', {
+        set: function (p) {
+            if (Array.isArray(p)) {
+                this._programms = p;
+            } else {
+                console.log('Param type is not array!');
+            }
+        },
+        configurable: true,
+    });
+
+
 
 }
 
+const newProgramms = ['2'];
 
-const programms = [
-    'rare',
-    'medium rare',
-    'medium',
-    'medium well',
-    'well done'
-]
 
 let grill = new Product('гриль');
-grill.programms = programms;
-console.log(programms)
+grill.programms = newProgramms;
+
+console.log(grill);
+
 let answer = rl.question('what roast do you prefer?: ');
 switch (answer) {
     case 'RARE':
